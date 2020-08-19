@@ -5,14 +5,12 @@ from bs4 import BeautifulSoup as soup
 import pandas as pd
 import time
 
-# PATH = r"C:\Users\Cole Rutledge\scraping\chromedriver.exe"
-PATH = "/usr/bin/chromedriver"
+PATH = r"C:\Users\Cole Rutledge\scraping\chromedriver.exe"
+# PATH = "/usr/bin/chromedriver"
 # PATH = "/opt/selenium/chromedriver-84.0.4147.30"
 driver = webdriver.Chrome(PATH)
-dataframe = pd.DataFrame(columns=['Title','Location','Company','Salary','Description'])
-# driver.get('https://www.indeed.com/jobs?q=react%20developer&l=Charlotte%2C%20NC&ts=1597684854766&rq=1&rsIdx=0&vjk=08da742a5c8fc094')
+dataframe = pd.DataFrame(columns=['Title','Location','Company','Salary','Description','Link'])
 driver.get('https://www.indeed.com')
-# print(driver.title)
 
 search = driver.find_element_by_name("q")
 search.clear()
@@ -29,28 +27,32 @@ time.sleep(1)
 
 # driver.find_element_by_class_name('popover-x-button-close').click()
 
-# time.sleep(2)
 url = driver.current_url
-# print(url)
+print(url)
 
-for i in range(0,100,10):
+for i in range(0,30,10):
   current_url = url+f'&start={i}'
   driver.get(current_url)
   driver.implicitly_wait(4)
 
 
-  all_jobs = driver.find_elements_by_class_name('result')
+  for job in driver.find_elements_by_class_name('result'):
 
-  for job in all_jobs:
-
-    result_html = job.get_attribute('innerHTML')
-    soup_result = soup(result_html, 'html.parser')
+    soup_result = soup(job.get_attribute('innerHTML'), 'html.parser')
 
     try:
-      title = soup_result.find('a', class_='jobtitle').text.replace('\n','')
-      print(title)
+      title = soup_result.find('a', class_='jobtitle').text.replace('\n','').strip()
+      # print(title)
     except:
       title = 'None'
+
+    try:
+      link = 'http://www.indeed.com' + soup_result.find('a', class_='jobtitle')['href']
+      print(link)
+      print()
+    except:
+      link = 'None'
+
     try:
       location = soup_result.find(class_='location').text
       # print(location)
@@ -58,7 +60,7 @@ for i in range(0,100,10):
       location = 'None'
     try:
       company = soup_result.find(class_='company').text.replace('\n','').strip()
-      print(company)
+      # print(company)
     except:
       company = 'None'
     try:
@@ -68,20 +70,30 @@ for i in range(0,100,10):
       salary = 'None'
 
     sum_div = job.find_elements_by_class_name('summary')[0]
+    # sum_div = job.find_element_by_xpath('./div[3]')
     try:
       sum_div.click()
     except:
       driver.find_element_by_class_name('popover-x-button-close').click()
       sum_div.click()
+
     # time.sleep(2)
-    # job_desc = driver.find_element_by_id('jobDescriptionText').text
+    driver.switch_to.frame(driver.find_element_by_id('vjs-container-iframe'))
+    job_desc = driver.find_element_by_id('jobDescriptionText').text
+    # job_desc = driver.find_element_by_id('vjs-desc').text
+    # print(job_desc)
+
     dataframe = dataframe.append({
       'Title': title,
       'Location': location,
       'Company': company,
       'Salary': salary,
-      'Description': None,
+      'Description': job_desc,
+      'Link': link,
     }, ignore_index=True)
+
+    # driver.switch_to.window(driver.window_handles.last)
+    driver.switch_to.default_content()
 
 dataframe.to_csv('indeed_test.csv', index=False)
 
@@ -106,7 +118,7 @@ dataframe.to_csv('indeed_test.csv', index=False)
 #   print(i.text)
 
 
-driver.quit()
+# driver.quit()
 
 
 # sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
