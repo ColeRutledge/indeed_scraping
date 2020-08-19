@@ -6,8 +6,8 @@ import pandas as pd
 import time
 
 # PATH = r"C:\Users\Cole Rutledge\scraping\chromedriver.exe"
-# PATH = "/usr/bin/chromedriver"
-PATH = "/opt/selenium/chromedriver-84.0.4147.30"
+PATH = "/usr/bin/chromedriver"
+# PATH = "/opt/selenium/chromedriver-84.0.4147.30"
 driver = webdriver.Chrome(PATH)
 dataframe = pd.DataFrame(columns=['Title','Location','Company','Salary','Description'])
 # driver.get('https://www.indeed.com/jobs?q=react%20developer&l=Charlotte%2C%20NC&ts=1597684854766&rq=1&rsIdx=0&vjk=08da742a5c8fc094')
@@ -73,7 +73,7 @@ for i in range(0,100,10):
     except:
       driver.find_element_by_class_name('popover-x-button-close').click()
       sum_div.click()
-    time.sleep(2)
+    # time.sleep(2)
     # job_desc = driver.find_element_by_id('jobDescriptionText').text
     dataframe = dataframe.append({
       'Title': title,
