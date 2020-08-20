@@ -5,29 +5,44 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import time
 
+dataframe = pd.DataFrame(columns=[
+  'search_terms',
+  'search_loc',
+  'title',
+  'location',
+  'company',
+  'salary',
+  'date',
+  'description',
+  'link',
+])
 searches = [
   ('javascript developer', 'Charlotte, NC'),
-  ('javascript developer', 'New York, NY'),
-  ('javascript developer', 'Austin, TX'),
-  ('javascript developer', 'San Francisco, CA'),
-  ('javascript developer', 'Washington, DC')
+  # ('javascript developer', 'New York, NY'),
+  # ('javascript developer', 'Austin, TX'),
+  # ('javascript developer', 'San Francisco, CA'),
+  # ('javascript developer', 'Washington, DC'),
+  # ('python developer', 'Charlotte, NC'),
+  # ('python developer', 'New York, NY'),
+  # ('python developer', 'Austin, TX'),
+  # ('python developer', 'San Francisco, CA'),
+  # ('python developer', 'Washington, DC'),
 ]
-dataframe = pd.DataFrame(columns=['Title','Location','Company','Salary','Description','Link'])
 
 # config selenium and point to driver
 PATH = r"C:\Users\Cole Rutledge\scraping\chromedriver.exe"
 driver = webdriver.Chrome(PATH)
 
-for keywords, location in searches:
+for search_terms, search_loc in searches:
   # indeed search
   driver.get('https://www.indeed.com')
   search = driver.find_element_by_name("q")
   search.clear()
-  search.send_keys(keywords)
+  search.send_keys(search_terms)
   search = driver.find_element_by_name("l")
   search.send_keys(Keys.CONTROL + 'a')
   search.send_keys(Keys.DELETE)
-  search.send_keys(location)
+  search.send_keys(search_loc)
   search.send_keys(Keys.RETURN)
 
   url = driver.current_url
@@ -45,12 +60,10 @@ for keywords, location in searches:
         title = soup.find('a', class_='jobtitle').text.replace('\n','').strip()
       except:
         title = 'None'
-
       try:
         link = 'http://www.indeed.com' + soup.find('a', class_='jobtitle')['href']
       except:
         link = 'None'
-
       try:
         location = soup.find(class_='location').text
       except:
@@ -63,6 +76,10 @@ for keywords, location in searches:
         salary = soup.find(class_='salary').text.replace('\n','').strip()
       except:
         salary = 'None'
+      try:
+        date = soup.find(class_='date').text
+      except:
+        date = 'None'
 
       sum_div = job.find_elements_by_class_name('summary')[0]
       try:
@@ -75,17 +92,18 @@ for keywords, location in searches:
       job_desc = driver.find_element_by_id('jobDescriptionText').text
 
       dataframe = dataframe.append({
-        'Title': title,
-        'Location': location,
-        'Company': company,
-        'Salary': salary,
-        'Description': job_desc,
-        'Link': link,
+        'search_terms': search_terms,
+        'search_loc': search_loc,
+        'title': title,
+        'location': location,
+        'company': company,
+        'salary': salary,
+        'date': date,
+        'description': job_desc,
+        'link': link,
       }, ignore_index=True)
 
       driver.switch_to.default_content()
 
-dataframe.to_csv('indeed_test.csv', index=False)
-
-
+dataframe.to_csv('indeed_seed.csv',index=False,encoding='utf-8-sig')
 driver.quit()
