@@ -3,7 +3,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-import time
+
 
 dataframe = pd.DataFrame(columns=[
   'search_terms',
@@ -16,17 +16,18 @@ dataframe = pd.DataFrame(columns=[
   'description',
   'link',
 ])
+
 searches = [
   ('javascript developer', 'Charlotte, NC'),
-  # ('javascript developer', 'New York, NY'),
-  # ('javascript developer', 'Austin, TX'),
-  # ('javascript developer', 'San Francisco, CA'),
-  # ('javascript developer', 'Washington, DC'),
-  # ('python developer', 'Charlotte, NC'),
-  # ('python developer', 'New York, NY'),
-  # ('python developer', 'Austin, TX'),
-  # ('python developer', 'San Francisco, CA'),
-  # ('python developer', 'Washington, DC'),
+  ('javascript developer', 'New York, NY'),
+  ('javascript developer', 'Austin, TX'),
+  ('javascript developer', 'San Francisco, CA'),
+  ('javascript developer', 'Washington, DC'),
+  ('python developer', 'Charlotte, NC'),
+  ('python developer', 'New York, NY'),
+  ('python developer', 'Austin, TX'),
+  ('python developer', 'San Francisco, CA'),
+  ('python developer', 'Washington, DC'),
 ]
 
 # config selenium and point to driver
@@ -47,8 +48,8 @@ for search_terms, search_loc in searches:
 
   url = driver.current_url
 
-  for i in range(0,10,10):
-    current_url = url+f'&start={i}'
+  for i in range(0,350,10):
+    current_url = url + f'&start={i}'
     driver.get(current_url)
     driver.implicitly_wait(4)
 
@@ -89,7 +90,12 @@ for search_terms, search_loc in searches:
         sum_div.click()
 
       driver.switch_to.frame(driver.find_element_by_id('vjs-container-iframe'))
-      job_desc = driver.find_element_by_id('jobDescriptionText').text
+
+      try:
+        job_desc = driver.find_element_by_id('jobDescriptionText').text
+      except:
+        job_desc = 'None'
+
 
       dataframe = dataframe.append({
         'search_terms': search_terms,
@@ -105,5 +111,6 @@ for search_terms, search_loc in searches:
 
       driver.switch_to.default_content()
 
-dataframe.to_csv('indeed_seed.csv',index=False,encoding='utf-8-sig')
+  dataframe.to_csv('indeed_seed.csv',index=False,encoding='utf-8-sig')
+
 driver.quit()
