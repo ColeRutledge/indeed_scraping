@@ -18,16 +18,16 @@ dataframe = pd.DataFrame(columns=[
 ])
 
 searches = [
-  ('javascript developer', 'Charlotte, NC'),
+  # ('javascript developer', 'Charlotte, NC'),
   ('javascript developer', 'New York, NY'),
   ('javascript developer', 'Austin, TX'),
   ('javascript developer', 'San Francisco, CA'),
-  ('javascript developer', 'Washington, DC'),
-  ('python developer', 'Charlotte, NC'),
-  ('python developer', 'New York, NY'),
-  ('python developer', 'Austin, TX'),
-  ('python developer', 'San Francisco, CA'),
-  ('python developer', 'Washington, DC'),
+  # ('javascript developer', 'Washington, DC'),
+  # ('python developer', 'Charlotte, NC'),
+  # ('python developer', 'New York, NY'),
+  # ('python developer', 'Austin, TX'),
+  # ('python developer', 'San Francisco, CA'),
+  # ('python developer', 'Washington, DC'),
 ]
 
 # config selenium and point to driver
@@ -48,7 +48,7 @@ for search_terms, search_loc in searches:
 
   url = driver.current_url
 
-  for i in range(0,350,10):
+  for i in range(0,10,10):
     current_url = url + f'&start={i}'
     driver.get(current_url)
     driver.implicitly_wait(4)
