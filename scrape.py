@@ -3,6 +3,7 @@ from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup as bs
 import pandas as pd
+import os
 
 
 dataframe = pd.DataFrame(columns=[
@@ -31,7 +32,7 @@ searches = [
 ]
 
 # config selenium and point to driver
-PATH = r"C:\Users\Cole Rutledge\scraping\chromedriver.exe"
+PATH = os.path.dirname(os.path.realpath(__file__))  + '\chromedriver.exe'
 driver = webdriver.Chrome(PATH)
 
 for search_terms, search_loc in searches:
