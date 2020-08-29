@@ -1,6 +1,6 @@
-indeed_seed.csv
-indeed_seed_demo.csv
 test.py
 scratch.ipynb
-indeed_seed_jup.csv
-market_sals.csv
+indeed_seed_backup.csv
+scraped_data.csv
+seed_positions.csv
+seed_market_sals.csv
