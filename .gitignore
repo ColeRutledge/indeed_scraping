@@ -4,3 +4,4 @@ indeed_seed_backup.csv
 scraped_data.csv
 seed_positions.csv
 seed_market_sals.csv
+debug.log
