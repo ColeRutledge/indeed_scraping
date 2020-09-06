@@ -150,7 +150,7 @@ for search_terms, search_loc in searches:
 
       driver.switch_to.default_content()
 
-  # dataframe.to_csv('scraped_data.csv',index=False,encoding='utf-8-sig')
+  dataframe.to_csv('scraped_data.csv',index=False,encoding='utf-8-sig')
   print(f'{datetime.datetime.now()}\t {search_loc} updated with search: "{search_terms}".\n')
 
 driver.quit()
